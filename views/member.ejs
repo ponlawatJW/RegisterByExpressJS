@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Member</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<style>
+    /* Remove the navbar's default margin-bottom and rounded borders */ 
+    .navbar {
+      margin-bottom: 0;
+      border-radius: 0;
+    }
+    
+    /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
+    .row.content {height: 450px}
+    
+    /* Set gray background color and 100% height */
+    .sidenav {
+      padding-top: 20px;
+      background-color: #f1f1f1;
+      height: 100%;
+    }
+    
+    /* Set black background color, white text and some padding */
+    footer {
+      background-color: #555;
+      color: white;
+      padding: 15px;
+    }
+    
+    /* On small screens, set height to 'auto' for sidenav and grid */
+    @media screen and (max-width: 767px) {
+      .sidenav {
+        height: auto;
+        padding: 15px;
+      }
+      .row.content {height:auto;} 
+    }
+  </style>
+</head>
+<body>
+    <!-- <nav class="navbar navbar-inverse navbar-fixed-top"> -->
+         <nav class="navbar navbar-inverse"> 
+            <div class="container-fluid">
+                <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>                        
+                </button>
+                <a class="navbar-brand" href="/member"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;Home</a>
+                </div>
+                <div class="collapse navbar-collapse" id="myNavbar">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="/" id="logout"><span class="glyphicon glyphicon-log-out"></span>&nbsp;&nbsp;Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    <!-- </<nav> -->
+    </nav>    
+    <div class="container"> 
+        <div class="col-md-12">
+            <h1>Member &nbsp; <span class="glyphicon glyphicon-user"></span></h1>
+            <br>
+            <table align ="center" class="table table-striped">
+                <thead>
+                    <tr >
+                        <th>No.</th>
+                        <th>Full Name</th>
+                        <th>Email</th>
+                        <th>Username</th>
+                        <th>Create Date</th>
+                    </tr>
+                </thead>
+                <ui> <% var No=1; members.forEach(function(member){ %>
+                    <tr>
+                        <td><%= No++;%></td> 
+                        <td><%= member.full_name %></td> 
+                        <td><%= member.email %></td> 
+                        <td><%= member.username %></td> 
+                        <td><%= member.createDate %> </td>    
+                    </tr>
+                    
+                    <% }) %> 
+                </ui>                           
+            </table>
+        </div>
+    </div>
+<script type="text/javascript">
+	$(document).ready(function() {
+		if(localStorage.getItem("token") === null){
+			window.location.replace("/");
+		} else {
+             $.ajax({
+                    type: "get",
+                    url: "/accessToken/find?tokenData="+localStorage.getItem("token"),
+                    statusCode: {
+                        400: function(res) {
+                            localStorage.removeItem("token");
+                            window.location.replace("/");
+                        }
+                    }
+            });
+        }
+    });
+	$("#logout").click(function(){
+		console.log("click");
+		$.ajax({
+			type: "post",
+            url: "/logout",
+            data: {"token": localStorage.getItem("token")},
+            statusCode: {
+				204: function(res) {
+					localStorage.removeItem("token");
+					window.location.replace("/");
+                },
+                400: function(res) {
+					localStorage.removeItem("token");
+					window.location.replace("/");
+                }
+            }
+		
+		});
+    });
+</script>
+</body>
+</html>

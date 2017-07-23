@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Registers</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container">   
+        <div id="signupbox" style=" margin-top:80px" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="panel-title"><b>REGISTER</b></div> 
+                    <div style="float:right; font-size: 85%; position: relative; top:-10px"><a  href="/" onclick="$('#signupbox').hide(); $('#loginbox').show()">Login</a></div> 
+                </div>  
+                <p id="alert"></p> 
+                <div class="panel-body" >
+                    <form id="signupform" class="form-horizontal" role="form">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Full Name</label>
+                            <div class="col-md-9">
+                                    <input type="text" class="form-control" id="full_name" placeholder="Full Name">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Email</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="email" placeholder="Email">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Username</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="username" placeholder="Username">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="password" class="col-md-3 control-label">Password</label>
+                            <div class="col-md-9">
+                                 <input type="text" class="form-control" id="password" placeholder="Password">
+                            </div>
+                        </div>     
+                    </form>
+                      <div class="col-md-offset-3 col-md-9"> 
+                        <button id="add"  class="btn btn-success"> Register</button>
+                     </div>  
+                </div>
+            </div> 
+        </div>
+    </div>
+<script type="text/javascript">
+    $(document).ready(function() {
+        if(localStorage.getItem("token") !== null){
+            $.ajax({
+                type: "get",
+                url: "/accessToken/find?tokenData="+localStorage.getItem("token"),
+                statusCode: {
+                    200: function(res) {
+                        window.location.replace("member");
+                    },
+                    400: function(res) {
+                        localStorage.removeItem("token");
+                        //window.location.replace("/");
+                    }
+                }
+            });
+        }
+     
+	$("#add").click(function(){
+        if($("#full_name").val() === "" || $("#email").val() === "" || $("#username").val() === "" || $("#password").val() === ""){
+            document.getElementById("alert").innerHTML = "<div class=\"alert alert-danger\" id=\"alert\">Please complete.</div>";
+        } else {
+            var data = {
+                "full_name": $("#full_name").val(),
+                "email": $("#email").val(),
+                "username": $("#username").val(),
+                "password": $("#password").val()
+            }
+            $.ajax({
+                type: "post",
+                url: "/registers/add",
+                //async: false,
+                data: data,
+                success: function(msg){
+                    window.location.replace("registers");
+                    alert("Register successfully");
+                },
+                statusCode: {
+                    422: function(msg){
+                        if(msg.responseText === "email"){
+                            document.getElementById("alert").innerHTML = "<div class=\"alert alert-danger\" id=\"alert\">This Email has already been registered.</div>";                                                     
+                        } else if(msg.responseText === "username"){
+                            document.getElementById("alert").innerHTML = "<div class=\"alert alert-danger\" id=\"alert\">This Username has already been registered.</div>";
+                        } 
+                    }
+                }
+            });
+        } 
+    });
+    });
+</script>
+</body>
+</html>
