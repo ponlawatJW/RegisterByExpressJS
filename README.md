@@ -4,8 +4,8 @@
 -logout
 
 #Database mongDB
-Database Name ==> MMS
-Collection ==>members, accessToken
+> #Database Name ==> MMS
+> #Collection ==> members, accessToken
 
 #Connect DB
 > mongod
