@@ -22,11 +22,11 @@
                     <form id="loginform" class="form-horizontal" role="form">                                  
                         <div style="margin-bottom: 25px" class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                            <input type="text" class="form-control" id="username"  placeholder="username">                                        
+                            <input type="text" class="form-control" id="username"  placeholder="username" onkeypress="myFunction(event)">                                        
                         </div>
                         <div style="margin-bottom: 25px" class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                            <input type="password" class="form-control" id="password" placeholder="password">
+                            <input type="password" class="form-control" id="password" placeholder="password" onkeypress="myFunction(event)">
                         </div>  
                         <div class="form-group">
                             <div class="col-md-12 control">
@@ -37,7 +37,7 @@
                             </div>
                         </div>    
                     </form> 
-                        <button id="login"class="btn btn-success"><span class="glyphicon glyphicon-log-in"></span>&nbsp;&nbsp;Login</button>  
+                        <button id="login"class="btn btn-success" onkeypress="myFunction(event)"><span class="glyphicon glyphicon-log-in"></span>&nbsp;&nbsp;Login</button>  
                 </div>                     
             </div>  
         </div>
@@ -53,15 +53,24 @@
                             window.location.replace("member");
                         },
                         400: function(res) {
-                            localStorage.removeItem("token");
+                         localStorage.removeItem("token");
                             //window.location.replace("/");
                         }
-                    }
+                   }
             });
         }
      
     $("#login").click(function(){
-            if($("#username").val() === "" && $("#password").val() === ""){
+        submitLoginFrom();
+    });
+});
+function myFunction(event) {
+    if (event.keyCode == 13) {
+       submitLoginFrom();
+    }
+}
+function submitLoginFrom() {
+ if($("#username").val() === "" && $("#password").val() === ""){
             document.getElementById("alert").innerHTML = "<div class=\"alert alert-danger\" id=\"alert\">Please your check password and username</div>";
             } else {
                 var data = {
@@ -84,10 +93,8 @@
                     }
                         
                 });
-            }
-    });
-    });
-	
+    }
+}
 </script>
 </body>
 </html>

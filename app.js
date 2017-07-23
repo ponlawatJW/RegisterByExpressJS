@@ -98,7 +98,7 @@ app.get('/', function(req, res){
 app.post('/login', function(req, res) {
     // Check username and Password form Database
     db.members.find({username : req.body.username,password:req.body.password}, function(err, userData){
-        console.log(userData);
+        //console.log(userData);
         if(userData.length === 0){
             res.status(400).send('err !');
         } else {
